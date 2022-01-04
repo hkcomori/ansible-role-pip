@@ -8,7 +8,16 @@
   pip:
     name: "{{ item.name | default(item) }}"
     version: "{{ item.version | default(omit) }}"
-    virtualenv: "{{ item.virtualenv | default(omit) }}"
     state: "{{ item.state | default(omit) }}"
     executable: "{{ pip_executable }}"
   loop: "{{ pip_install_packages }}"
+  when: item.virtualenv is not defined
+
+- name: Ensure pip_install_packages are installed with virtualenv.
+  pip:
+    name: "{{ item.name }}"
+    version: "{{ item.version | default(omit) }}"
+    virtualenv: "{{ item.virtualenv }}"
+    state: "{{ item.state | default(omit) }}"
+  loop: "{{ pip_install_packages }}"
+  when: item.virtualenv is defined
